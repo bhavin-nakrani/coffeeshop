@@ -1,10 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
     const Customer = sequelize.define("customer", {
       full_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING        
       },
       email_address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       address_line_1: {
         type: Sequelize.STRING
