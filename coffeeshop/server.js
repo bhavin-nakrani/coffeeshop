@@ -16,16 +16,16 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const db = require("./app/models");
+const db = require("./models");
 
-db.sequelize.sync({alter: true, force: true});
+db.sequelize.sync({force: true}); //alter: true, 
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Coffeeshop application." });
 });
 
-require("./app/routes/customers.routes")(app);
+require("./routes/customers.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.NODE_DOCKER_PORT || 8080;

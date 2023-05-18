@@ -1,8 +1,14 @@
-const dbConfig = require("../../config/db.config.js");
-const fs = require("fs");
-const path = require("path");
-const Sequelize = require("sequelize");
+'use strict';
+const dbConfig = require("../config/db.config.js");
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const process = require('process');
 const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
+const db = {};
+
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
@@ -16,8 +22,6 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     idle: dbConfig.pool.idle
   }
 });
-
-const db = {};
 
 fs
   .readdirSync(__dirname)
@@ -40,12 +44,12 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+// db.statuses = require("./status.js")(sequelize, Sequelize);
+// db.taxses = require("./tax.js")(sequelize, Sequelize);
+// db.customers = require("./customer.js")(sequelize, Sequelize);
+// db.products = require("./product.js")(sequelize, Sequelize);
 
-db.statuses = require("./status.js")(sequelize, Sequelize);
-db.taxses = require("./tax.js")(sequelize, Sequelize);
-db.customers = require("./customer.js")(sequelize, Sequelize);
-db.products = require("./product.js")(sequelize, Sequelize);
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 module.exports = db;
