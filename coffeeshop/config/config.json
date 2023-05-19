@@ -1,0 +1,9 @@
+{
+    "development": {
+      "username": "root",
+      "password": "admin@123",
+      "database": "coffeeshop_db",
+      "host": "mysqldb",
+      "dialect": "mysql"
+    }
+}
