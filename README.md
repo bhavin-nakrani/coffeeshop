@@ -12,6 +12,8 @@ Docker will pull the MySQL and Node.js images (if our machine does not have it b
 The services can be run on the background with command:
 ```
 docker-compose up -d
+
+docker-compose -f docker-compose.yml up -d --build --force-recreate
 ```
 
 ## Stop the System
