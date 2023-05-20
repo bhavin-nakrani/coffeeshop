@@ -1,38 +1,47 @@
 const db = require("../models");
+const util = require('util');
 const CustomerOrder = db.CustomerOrder;
+const CustomerOrderItem = db.CustomerOrderItem;
 const Op = db.Sequelize.Op;
 const Status = db.Status;
 const Customer = db.Customer;
 
 // Create and Save a new customerOrder
 exports.create = async (req, res) => {
+    
+    let totalPrice = 0;
+    let CustomerId = null;
+    
+    const orderRecords = JSON.parse(JSON.stringify(req.body));
+    await orderRecords.forEach(obj => {
+        totalPrice += obj['price'];
+        CustomerId = obj['CustomerId'];
+    });
+    
     // Validate request
-    /*if (!req.body.total_price) {
+    if (CustomerId == null) {
       res.status(400).send({
-        message: "Content can not be empty!"
+        message: "Customer Id can not be empty!"
       });
       return;
-    }*/
-    console.log(JSON.stringify(req.body));
-    return false;
+    }
+   
     // Get default status or related status object
     const statusId = (req.body.StatusId) ? req.body.StatusId : 1;
     //const StatusObj = await Status.findOne({where: {id: statusId}});
 
-    // Prepare Customer object
-    //const customerObj = await Customer.findOne({where: {id: req.body.CustomerId}});
-
     // Create a customerOrder
     const customerOrder = {
-        total_price: req.body.total_price,
-        CustomerId: req.body.CustomerId,
+        total_price: totalPrice,
+        CustomerId: CustomerId,
         StatusId: statusId, // By default its Pending
     };
   
     // Save CustomerOrder in the database
-    await CustomerOrder.create(customerOrder)
+    const OrderObj = await CustomerOrder.create(customerOrder)
       .then(data => {
-        res.send(data);
+        return data;
+        //res.send(data);
       })
       .catch(err => {
         res.status(500).send({
@@ -40,6 +49,33 @@ exports.create = async (req, res) => {
             err.message || "Some error occurred while creating the CustomerOrder."
         });
       });
+
+      await orderRecords.forEach( async (obj) => {
+        let orderItem = {};
+        console.log(util.inspect(obj));
+        const itemPrice = obj['price'];
+        const productId = obj['ProductId'];
+
+        orderItem = {
+            total_price: itemPrice,
+            ProductId: productId,
+            CustomerOrderId: OrderObj.id
+        }
+        
+        await CustomerOrderItem.create(orderItem)
+            .then(data => {
+                return data;
+            })
+            .catch(err => {
+                res.status(500).send({
+                  message:
+                    err.message || "Some error occurred while creating the CustomerOrder Item."
+                });
+              });
+        });
+
+        return res.send({message: "Success"});
+      
   };
   
   // Retrieve all CustomerOrders from the database.
