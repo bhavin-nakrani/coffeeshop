@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const process = require('process');
+const cron = require("node-cron");
 
 const app = express();
 
@@ -19,7 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = require("./models");
 
-db.sequelize.sync({alter: true}); //alter: true, 
+db.sequelize.sync({alter: false, force: false}); //alter: true, 
+
+// Cron
+require("./cron/cron")(cron);
 
 // simple route
 app.get("/", (req, res) => {
