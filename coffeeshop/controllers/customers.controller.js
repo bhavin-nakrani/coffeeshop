@@ -120,7 +120,7 @@ exports.delete = (req, res) => {
 
 // Delete all customers from the database.
 exports.deleteAll = (req, res) => {
-    Customer.destroy({
+  Customer.destroy({
     where: {},
     truncate: false
   })
