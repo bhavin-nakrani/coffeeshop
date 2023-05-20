@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = require("./models");
 
-db.sequelize.sync({force: true}); //alter: true, 
+db.sequelize.sync({alter: true}); //alter: true, 
 
 // simple route
 app.get("/", (req, res) => {
@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
 
 require("./routes/customers.routes")(app);
 require("./routes/products.routes")(app);
+require("./routes/customerOrders.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.NODE_DOCKER_PORT || 8080;
